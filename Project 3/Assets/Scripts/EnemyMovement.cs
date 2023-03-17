@@ -9,13 +9,34 @@ public class EnemyMovement : MonoBehaviour
     private Transform target;
     private int waypointIndex = 0;
 
+    public int health = 100;
+    public int earnings = 50;
+
+    private bool isDead = false;
+
     private void Start()
     {
         //target begins at the very first waypoint
         target = Waypoint.waypoints[0];
     }
 
-    
+    public void TakeDamage(int ammount)
+    {
+        health -= ammount;
+
+        if (health <= 0 && !isDead)
+        {
+            Die();
+            WaveSpawner.enemiesAlive--;
+        }
+    }
+
+    void Die()
+    {
+        isDead = true;
+        Player.Money += earnings;
+        Destroy(gameObject);
+    }
     void Update()
     {
         Vector3 dir = target.position - transform.position;
@@ -27,19 +48,29 @@ public class EnemyMovement : MonoBehaviour
         {
             NextWaypoint();
         }
+       
     }
 
     void NextWaypoint()
-    {   
-        if(waypointIndex >= Waypoint.waypoints.Length - 1)
+    {
+        if (waypointIndex >= Waypoint.waypoints.Length - 1)
         {
-            Destroy(gameObject);
+            EndGoal();
             return;
         }
 
         //Allows access to the other waypoints
         waypointIndex++;
         target = Waypoint.waypoints[waypointIndex];
-    
+
     }
+
+    void EndGoal()
+    {
+        Player.towerHealth--;
+        Destroy(gameObject);
+        WaveSpawner.enemiesAlive--;
+    }
+
+    
 }

@@ -6,6 +6,7 @@ public class Waypoint : MonoBehaviour
 {
 
     public static Transform[] waypoints;
+    public GameObject waypoint;
 
     private void Awake()
     {
